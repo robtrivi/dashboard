@@ -1,48 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import { fetchWeatherData } from '../api/api';
-import { Box, Typography } from '@mui/material';
+import { fetchCoordinates, fetchHistoricalWeatherData } from '../api/api';
+import { Box, Typography, Paper } from '@mui/material';
 import { Chart } from 'react-google-charts';
 
 interface WeatherChartProps {
-    cities: string[];
+    city: string;
 }
 
-const WeatherChart: React.FC<WeatherChartProps> = ({ cities }) => {
-    const [chartData, setChartData] = useState<any>([]);
+const WeatherChart: React.FC<WeatherChartProps> = ({ city }) => {
+    const [chartData, setChartData] = useState<any>([['Date', 'Temperature']]);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await Promise.all(cities.map(city => fetchWeatherData(city)));
-            const temperatures = data.map(xml => parseFloat(xml.querySelector('temperature')?.getAttribute('value') || '0'));
+            try {
+                const { lat, lon } = await fetchCoordinates(city);
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(endDate.getDate() - 6);
 
-            const formattedData = [
-                ['City', 'Temperature'],
-                ...cities.map((city, index) => [city, temperatures[index]])
-            ];
+                const formattedEndDate = endDate.toISOString().split('T')[0];
+                const formattedStartDate = startDate.toISOString().split('T')[0];
 
-            setChartData(formattedData);
+                const historicalData = await fetchHistoricalWeatherData(lat, lon, formattedStartDate, formattedEndDate);
+
+                const formattedData = [
+                    ['Date', 'Temperature'],
+                    ...historicalData.daily.temperature_2m_mean.map((temp: number, i: number) => {
+                        const date = new Date(startDate);
+                        date.setDate(date.getDate() + i);
+                        return [date.toLocaleDateString(), temp];
+                    }),
+                ];
+
+                if (formattedData.length > 1) {
+                    setChartData(formattedData);
+                    setError(null);
+                } else {
+                    setError('No data available for the selected city.');
+                }
+            } catch (error) {
+                setError('Error fetching historical weather data.');
+                console.error('Error fetching historical weather data:', error);
+            }
         };
         fetchData();
-    }, [cities]);
+    }, [city]);
 
     return (
-        <Box sx={{ mt: 4 }}>
-            <Typography variant="h6">Gráfico de Temperaturas</Typography>
-            <Chart
-                chartType="LineChart"
-                width="100%"
-                height="400px"
-                data={chartData}
-                options={{
-                    hAxis: {
-                        title: 'City',
-                    },
-                    vAxis: {
-                        title: 'Temperature (°C)',
-                    },
-                }}
-            />
-        </Box>
+        <Paper elevation={3} sx={{ p: 3, mt: 3, borderRadius: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Gráfico de Temperaturas - Última Semana</Typography>
+            {error ? (
+                <Typography variant="body1" color="error">{error}</Typography>
+            ) : (
+                <Chart
+                    chartType="LineChart"
+                    width="100%"
+                    height="400px"
+                    data={chartData}
+                    options={{
+                        hAxis: {
+                            title: 'Date',
+                        },
+                        vAxis: {
+                            title: 'Temperature (°C)',
+                        },
+                        legend: { position: 'none' },
+                    }}
+                />
+            )}
+        </Paper>
     );
 };
 
