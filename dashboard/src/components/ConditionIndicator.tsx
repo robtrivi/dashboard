@@ -26,7 +26,7 @@ const ConditionIndicator: React.FC<ConditionIndicatorProps> = ({ condition }) =>
     };
 
     return (
-        <Paper elevation={1} sx={{ p: 2, textAlign: 'center', borderRadius: 2, width: '100%' }}>
+        <Paper elevation={1} sx={{ py: 2, textAlign: 'center', borderRadius: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Condición</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 1 }}>
                 {getWeatherIcon(condition)}
