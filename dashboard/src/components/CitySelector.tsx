@@ -22,8 +22,7 @@ const CitySelector: React.FC = () => {
 
     return (
         <Container maxWidth="lg" sx={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Box sx={{ p: 2 }}>
-                <Typography variant="h4" gutterBottom>Dashboard de Clima</Typography>
+            <Box>
                 <Select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}

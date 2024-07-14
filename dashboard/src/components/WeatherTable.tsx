@@ -11,8 +11,25 @@ const WeatherTable: React.FC<WeatherTableProps> = ({ cities }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await Promise.all(cities.map(city => fetchWeatherData(city)));
-            setWeatherData(data);
+            const now = new Date().getTime();
+            const localStorageKey = `weatherData_allCities`;
+
+            const cachedData = localStorage.getItem(localStorageKey);
+            const cachedTime = localStorage.getItem(`${localStorageKey}_time`);
+
+            if (cachedData && cachedTime && now - parseInt(cachedTime) < 3600000) { // 1 hour in milliseconds
+                const parser = new DOMParser();
+                const data = JSON.parse(cachedData).map((xmlString: string) => parser.parseFromString(xmlString, "application/xml"));
+                setWeatherData(data);
+            } else {
+                const data = await Promise.all(cities.map(city => fetchWeatherData(city)));
+                setWeatherData(data);
+
+                const serializer = new XMLSerializer();
+                const serializedData = data.map(doc => serializer.serializeToString(doc));
+                localStorage.setItem(localStorageKey, JSON.stringify(serializedData));
+                localStorage.setItem(`${localStorageKey}_time`, now.toString());
+            }
         };
         fetchData();
     }, [cities]);

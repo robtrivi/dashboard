@@ -11,6 +11,24 @@ export const fetchWeatherData = async (city: string): Promise<Document> => {
     return xml;
 };
 
+export const getWeatherData = async (city: string) => {
+    const now = new Date().getTime();
+    const localStorageKey = `weatherData_${city}`;
+    const cachedData = localStorage.getItem(localStorageKey);
+    const cachedTime = localStorage.getItem(`${localStorageKey}_time`);
+
+    if (cachedData && cachedTime && now - parseInt(cachedTime) < 3600000) { // 1 hour in milliseconds
+        const parser = new DOMParser();
+        return parser.parseFromString(cachedData, "application/xml");
+    } else {
+        const data = await fetchWeatherData(city);
+        const serializer = new XMLSerializer();
+        localStorage.setItem(localStorageKey, serializer.serializeToString(data));
+        localStorage.setItem(`${localStorageKey}_time`, now.toString());
+        return data;
+    }
+};
+
 export const fetchCoordinates = async (city: string): Promise<{ lat: number, lon: number }> => {
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`);
     if (!response.ok) {

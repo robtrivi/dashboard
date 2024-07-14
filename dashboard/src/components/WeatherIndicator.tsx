@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchWeatherData } from '../api/api';
 import { Grid, Typography, Paper, Box } from '@mui/material';
-import TemperatureIndicator from './TemperatureIndicator';
-import HumidityIndicator from './HumidityIndicator';
-import ConditionIndicator from './ConditionIndicator';
+import Indicator from './Indicator';
 
 interface WeatherIndicatorProps {
     city: string;
@@ -16,25 +14,51 @@ const WeatherIndicator: React.FC<WeatherIndicatorProps> = ({ city }) => {
     const [condition, setCondition] = useState<string | null>(null);
     const [country, setCountry] = useState<string | null>(null);
 
+    const localStorageKey = `weatherData_${city}`;
+
     useEffect(() => {
         const fetchData = async () => {
-            const result = await fetchWeatherData(city);
-            const temperatureKelvin = parseFloat(result.querySelector('temperature')?.getAttribute('value') || '0');
-            const temperatureCelsius = temperatureKelvin - 273.15;
-            const feelsLikeKelvin = parseFloat(result.querySelector('feels_like')?.getAttribute('value') || '0');
-            const feelsLikeCelsius = feelsLikeKelvin - 273.15;
-            const humidity = parseFloat(result.querySelector('humidity')?.getAttribute('value') || '0');
-            const condition = result.querySelector('weather')?.getAttribute('value');
-            const country = result.querySelector('country')?.textContent;
+            const now = new Date().getTime();
+            const cachedData = localStorage.getItem(localStorageKey);
+            const cachedTime = localStorage.getItem(`${localStorageKey}_time`);
 
-            setTemperature(temperatureCelsius);
-            setFeelsLike(feelsLikeCelsius);
-            setHumidity(humidity);
-            setCondition(condition || '');
-            setCountry(country || '');
+            if (cachedData && cachedTime && now - parseInt(cachedTime) < 3600000) { // 1 hour in milliseconds
+                const data = JSON.parse(cachedData);
+                setTemperature(data.temperature);
+                setFeelsLike(data.feelsLike);
+                setHumidity(data.humidity);
+                setCondition(data.condition);
+                setCountry(data.country);
+            } else {
+                const result = await fetchWeatherData(city);
+                const temperatureKelvin = parseFloat(result.querySelector('temperature')?.getAttribute('value') || '0');
+                const temperatureCelsius = temperatureKelvin - 273.15;
+                const feelsLikeKelvin = parseFloat(result.querySelector('feels_like')?.getAttribute('value') || '0');
+                const feelsLikeCelsius = feelsLikeKelvin - 273.15;
+                const humidity = parseFloat(result.querySelector('humidity')?.getAttribute('value') || '0');
+                const condition = result.querySelector('weather')?.getAttribute('value');
+                const country = result.querySelector('country')?.textContent;
+
+                const weatherData = {
+                    temperature: temperatureCelsius,
+                    feelsLike: feelsLikeCelsius,
+                    humidity: humidity,
+                    condition: condition || '',
+                    country: country
+                };
+
+                setTemperature(temperatureCelsius);
+                setFeelsLike(feelsLikeCelsius);
+                setHumidity(humidity);
+                setCondition(condition || '');
+                setCountry(country);
+
+                localStorage.setItem(localStorageKey, JSON.stringify(weatherData));
+                localStorage.setItem(`${localStorageKey}_time`, now.toString());
+            }
         };
         fetchData();
-    }, [city]);
+    }, [city, localStorageKey]);
 
     return (
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -44,16 +68,16 @@ const WeatherIndicator: React.FC<WeatherIndicatorProps> = ({ city }) => {
                 </Typography>
                 <Grid container spacing={2} direction="column" alignItems="center" sx={{ width: '100%' }}>
                     <Grid item sx={{ width: '100%' }}>
-                        <TemperatureIndicator title="Temperatura Actual" temperature={temperature ?? 0} />
+                        <Indicator title="Temperatura Actual" value={`${temperature?.toFixed(2)}°C`} />
                     </Grid>
                     <Grid item sx={{ width: '100%' }}>
-                        <TemperatureIndicator title="Sensación Térmica" temperature={feelsLike ?? 0} />
+                        <Indicator title="Sensación Térmica" value={`${feelsLike?.toFixed(2)}°C`} />
                     </Grid>
                     <Grid item sx={{ width: '100%' }}>
-                        <HumidityIndicator humidity={humidity ?? 0} />
+                        <Indicator title="Humedad" value={`${humidity?.toFixed(2)}%`} />
                     </Grid>
                     <Grid item sx={{ width: '100%' }}>
-                        <ConditionIndicator condition={condition ?? ''} />
+                        <Indicator title="Condición" value={condition ?? ''} icon={condition ?? ''} />
                     </Grid>
                 </Grid>
             </Paper>
