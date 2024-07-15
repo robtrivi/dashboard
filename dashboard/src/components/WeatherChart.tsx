@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCoordinates, fetchHistoricalWeatherData } from '../api/api';
-import { Box, Typography, Paper } from '@mui/material';
+import { Typography, Paper } from '@mui/material';
 import { Chart } from 'react-google-charts';
 
 interface WeatherChartProps {
@@ -35,27 +35,33 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => 
                     precipitation: 'precipitation_sum',
                 }[historicalType];
 
-                if (!historicalData.daily[dataKey]) {
-                    throw new Error(`No data available for ${dataKey}`);
+                if (dataKey !== undefined) {
+                    if (!historicalData.daily[dataKey]) {
+                        throw new Error(`No data available for ${dataKey}`);
+                    }
+    
+                    const formattedData = [
+                        ['Date', 'Value'],
+                        ...historicalData.daily[dataKey].map((value: number, i: number) => {
+                            const date = new Date();
+                            date.setDate(date.getDate() - i);
+                            return [date.toLocaleDateString(), value];
+                        }),
+                    ];
+
+                    if (formattedData.length > 1) {
+                        setChartData(formattedData);
+                        setError(null);
+                    } else {
+                        setError('No data available for the selected city.');
+                    }
                 }
 
-                const formattedData = [
-                    ['Date', 'Value'],
-                    ...historicalData.daily[dataKey].map((value: number, i: number) => {
-                        const date = new Date();
-                        date.setDate(date.getDate() - i);
-                        return [date.toLocaleDateString(), value];
-                    }),
-                ];
+                
 
-                if (formattedData.length > 1) {
-                    setChartData(formattedData);
-                    setError(null);
-                } else {
-                    setError('No data available for the selected city.');
-                }
+                
             } catch (error) {
-                setError(`Error fetching historical weather data: ${error.message}`);
+                setError(`Error fetching historical weather data: ${(error as Error).message}`);
                 console.error('Error fetching historical weather data:', error);
             }
         };

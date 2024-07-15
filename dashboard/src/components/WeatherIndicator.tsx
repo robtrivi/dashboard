@@ -31,8 +31,8 @@ const WeatherIndicator: React.FC<WeatherIndicatorProps> = ({ city }) => {
             setFeelsLike(feelsLikeCelsius);
             setHumidity(humidity);
             setCondition(condition || '');
-            setCountry(country);
-            setIcon(iconCode);
+            setCountry(country || '');
+            setIcon(iconCode || '');
         };
         fetchData();
     }, [city]);
