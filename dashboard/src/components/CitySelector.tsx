@@ -78,7 +78,7 @@ const CitySelector: React.FC = () => {
                 <Typography variant="h4" gutterBottom align="center">Dashboard de Clima</Typography>
             </Box>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={8} md={6} lg={4}>
                     <TextField
                         label="Buscar ciudad"
                         value={cityInput}
@@ -88,7 +88,7 @@ const CitySelector: React.FC = () => {
                     />
                     <Button variant="contained" onClick={handleSearchCity} fullWidth>Buscar</Button>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={8} md={6} lg={4}>
                     <Select
                         value={historicalType}
                         onChange={(e) => setHistoricalType(e.target.value)}
@@ -107,22 +107,22 @@ const CitySelector: React.FC = () => {
                 {error ? (
                     <Typography variant="body1" color="error">{error}</Typography>
                 ) : (
-                    <Grid container item xs={12} spacing={2}>
-                        <Grid item xs={4}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={4}>
                             <Indicator 
                                 title="Pronóstico Día 1" 
                                 value={getValue(0)} 
                                 icon={getWeatherCondition(0)} 
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} sm={4}>
                             <Indicator 
                                 title="Pronóstico Día 2" 
                                 value={getValue(1)} 
                                 icon={getWeatherCondition(1)} 
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} sm={4}>
                             <Indicator 
                                 title="Pronóstico Día 3" 
                                 value={getValue(2)} 
@@ -131,16 +131,16 @@ const CitySelector: React.FC = () => {
                         </Grid>
                     </Grid>
                 )}
-                <Grid container item xs={12} spacing={2}>
-                    <Grid item xs={4}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
                         <WeatherIndicator city={selectedCity} />
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={12} md={8}>
                         <WeatherChart city={selectedCity} historicalType={historicalType} />
                     </Grid>
                 </Grid>
                 <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" align="center">Resumen de ciudades</Typography>
+                    <Typography variant="h4" align="center">Resumen de ciudades</Typography>
                 </Box>
                 <Grid item xs={12}>
                     <WeatherTable cities={ecuadorianCities} />
