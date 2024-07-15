@@ -82,6 +82,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => 
                     height="400px"
                     data={chartData}
                     options={{
+			curveType: 'function',
                         hAxis: {
                             title: 'Date',
                         },
