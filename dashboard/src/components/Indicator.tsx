@@ -32,7 +32,7 @@ const Indicator: React.FC<IndicatorProps> = ({ title, value, icon }) => {
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{title}</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 1 }}>
                 {icon && getWeatherIcon(icon)}
-                <Typography variant="h4" sx={{ ml: icon ? 1 : 0 }}>{value}</Typography>
+                <Typography variant="h5" sx={{ ml: icon ? 1 : 0 }}>{value}</Typography>
             </Box>
         </Paper>
     );

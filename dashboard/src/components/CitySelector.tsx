@@ -139,6 +139,9 @@ const CitySelector: React.FC = () => {
                         <WeatherChart city={selectedCity} historicalType={historicalType} />
                     </Grid>
                 </Grid>
+                <Box sx={{ mb: 4 }}>
+                <Typography variant="h4" align="center">Resumen de ciudades</Typography>
+                </Box>
                 <Grid item xs={12}>
                     <WeatherTable cities={ecuadorianCities} />
                 </Grid>
