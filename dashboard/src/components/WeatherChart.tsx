@@ -29,7 +29,16 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => 
                     throw new Error('No daily data available');
                 }
 
-                const dataKey = `${historicalType}_2m_max`; // Adjusted key based on API
+                const dataKey = {
+                    temperature: 'temperature_2m_max',
+                    humidity: 'relative_humidity_2m_max',
+                    precipitation: 'precipitation_sum',
+                }[historicalType];
+
+                if (!historicalData.daily[dataKey]) {
+                    throw new Error(`No data available for ${dataKey}`);
+                }
+
                 const formattedData = [
                     ['Date', 'Value'],
                     ...historicalData.daily[dataKey].map((value: number, i: number) => {
