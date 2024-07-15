@@ -5,10 +5,11 @@ import { Chart } from 'react-google-charts';
 
 interface WeatherChartProps {
     city: string;
+    historicalType: string;
 }
 
-const WeatherChart: React.FC<WeatherChartProps> = ({ city }) => {
-    const [chartData, setChartData] = useState<any>([['Date', 'Temperature']]);
+const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => {
+    const [chartData, setChartData] = useState<any>([['Date', 'Value']]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -22,14 +23,19 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city }) => {
                 const formattedEndDate = endDate.toISOString().split('T')[0];
                 const formattedStartDate = startDate.toISOString().split('T')[0];
 
-                const historicalData = await fetchHistoricalWeatherData(lat, lon, formattedStartDate, formattedEndDate);
+                const historicalData = await fetchHistoricalWeatherData(lat, lon, formattedStartDate, formattedEndDate, historicalType);
 
+                if (!historicalData.daily) {
+                    throw new Error('No daily data available');
+                }
+
+                const dataKey = `${historicalType}_2m_max`; // Adjusted key based on API
                 const formattedData = [
-                    ['Date', 'Temperature'],
-                    ...historicalData.daily.temperature_2m_mean.map((temp: number, i: number) => {
-                        const date = new Date(startDate);
-                        date.setDate(date.getDate() + i);
-                        return [date.toLocaleDateString(), temp];
+                    ['Date', 'Value'],
+                    ...historicalData.daily[dataKey].map((value: number, i: number) => {
+                        const date = new Date();
+                        date.setDate(date.getDate() - i);
+                        return [date.toLocaleDateString(), value];
                     }),
                 ];
 
@@ -40,16 +46,18 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city }) => {
                     setError('No data available for the selected city.');
                 }
             } catch (error) {
-                setError('Error fetching historical weather data.');
+                setError(`Error fetching historical weather data: ${error.message}`);
                 console.error('Error fetching historical weather data:', error);
             }
         };
         fetchData();
-    }, [city]);
+    }, [city, historicalType]);
 
     return (
         <Paper elevation={3} sx={{ p: 3, mt: 3, borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Gráfico de Temperaturas - Última Semana</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+                Gráfico de {historicalType.charAt(0).toUpperCase() + historicalType.slice(1)} - Última Semana
+            </Typography>
             {error ? (
                 <Typography variant="body1" color="error">{error}</Typography>
             ) : (
@@ -63,7 +71,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city }) => {
                             title: 'Date',
                         },
                         vAxis: {
-                            title: 'Temperature (°C)',
+                            title: `${historicalType.charAt(0).toUpperCase() + historicalType.slice(1)} (°C)`,
                         },
                         legend: { position: 'none' },
                     }}

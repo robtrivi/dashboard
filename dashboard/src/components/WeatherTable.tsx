@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchWeatherData } from '../api/api';
+import { getWeatherData } from '../api/api';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 interface WeatherTableProps {
@@ -7,30 +7,23 @@ interface WeatherTableProps {
 }
 
 const WeatherTable: React.FC<WeatherTableProps> = ({ cities }) => {
-    const [weatherData, setWeatherData] = useState<Document[]>([]);
+    const [weatherData, setWeatherData] = useState<{ [key: string]: Document }>({});
 
     useEffect(() => {
         const fetchData = async () => {
-            const now = new Date().getTime();
-            const localStorageKey = `weatherData_allCities`;
+            const data = await Promise.all(cities.map(async (city) => {
+                const result = await getWeatherData(city);
+                return { city, data: result };
+            }));
 
-            const cachedData = localStorage.getItem(localStorageKey);
-            const cachedTime = localStorage.getItem(`${localStorageKey}_time`);
+            const weatherDataObject: { [key: string]: Document } = {};
+            data.forEach(({ city, data }) => {
+                weatherDataObject[city] = data;
+            });
 
-            if (cachedData && cachedTime && now - parseInt(cachedTime) < 3600000) { // 1 hour in milliseconds
-                const parser = new DOMParser();
-                const data = JSON.parse(cachedData).map((xmlString: string) => parser.parseFromString(xmlString, "application/xml"));
-                setWeatherData(data);
-            } else {
-                const data = await Promise.all(cities.map(city => fetchWeatherData(city)));
-                setWeatherData(data);
-
-                const serializer = new XMLSerializer();
-                const serializedData = data.map(doc => serializer.serializeToString(doc));
-                localStorage.setItem(localStorageKey, JSON.stringify(serializedData));
-                localStorage.setItem(`${localStorageKey}_time`, now.toString());
-            }
+            setWeatherData(weatherDataObject);
         };
+
         fetchData();
     }, [cities]);
 
@@ -47,8 +40,15 @@ const WeatherTable: React.FC<WeatherTableProps> = ({ cities }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {weatherData.map((data, index) => {
-                        const city = cities[index];
+                    {cities.map((city) => {
+                        const data = weatherData[city];
+                        if (!data) {
+                            return (
+                                <TableRow key={city}>
+                                    <TableCell colSpan={5}>Cargando datos...</TableCell>
+                                </TableRow>
+                            );
+                        }
                         const country = data.querySelector('country')?.textContent;
                         const temperatureKelvin = parseFloat(data.querySelector('temperature')?.getAttribute('value') || '0');
                         const temperatureCelsius = temperatureKelvin - 273.15;
