@@ -1,30 +1,20 @@
 import React from 'react';
 import { Grid, MenuItem, Button, Select } from '@mui/material';
-import SearchCityInput from './SearchCityInput';
 
 interface CitySelectorProps {
-    cityInput: string;
-    setCityInput: React.Dispatch<React.SetStateAction<string>>;
     handleSearchCity: () => void;
     historicalType: string;
     setHistoricalType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CitySelector: React.FC<CitySelectorProps> = ({
-    cityInput,
-    setCityInput,
     handleSearchCity,
     historicalType,
     setHistoricalType,
 }) => {
     return (
-        <Grid container direction="column">
-    <Grid item>
-        <SearchCityInput
-            cityInput={cityInput}
-            setCityInput={setCityInput}
-        />
-    </Grid>
+        <Grid container direction="column" spacing={1}>
+    
     <Grid item>
         <Select
             value={historicalType}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCoordinates, fetchHistoricalWeatherData } from '../api/api';
 import { Typography, Paper } from '@mui/material';
-import { Chart } from 'react-google-charts';
+import { AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, Area, ResponsiveContainer, Legend } from 'recharts';
 
 interface WeatherChartProps {
     city: string;
@@ -9,7 +9,7 @@ interface WeatherChartProps {
 }
 
 const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => {
-    const [chartData, setChartData] = useState<any>([['Date', 'Value']]);
+    const [chartData, setChartData] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => 
                 const historicalData = await fetchHistoricalWeatherData(lat, lon, formattedStartDate, formattedEndDate, historicalType);
 
                 if (!historicalData.daily) {
-                    throw new Error('No daily data available');
+                    throw new Error('No hay datos disponibles');
                 }
 
                 const dataKey = {
@@ -39,59 +39,80 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => 
                     if (!historicalData.daily[dataKey]) {
                         throw new Error(`No data available for ${dataKey}`);
                     }
-    
-                    const formattedData = [
-                        ['Date', 'Value'],
-                        ...historicalData.daily[dataKey].map((value: number, i: number) => {
-                            const date = new Date();
-                            date.setDate(date.getDate() - i);
-                            return [date.toLocaleDateString(), value];
-                        }),
-                    ];
 
-                    if (formattedData.length > 1) {
+                    const formattedData = historicalData.daily[dataKey].map((value: number, i: number) => {
+                        const date = new Date();
+                        date.setDate(date.getDate() - i);
+                        return { date: date.toLocaleDateString(), value };
+                    }).reverse();
+
+                    if (formattedData.length > 0) {
                         setChartData(formattedData);
                         setError(null);
                     } else {
-                        setError('No data available for the selected city.');
+                        setError('No hay datos disponibles para esta ciudad.');
                     }
                 }
 
-                
-
-                
             } catch (error) {
-                setError(`Error fetching historical weather data: ${(error as Error).message}`);
-                console.error('Error fetching historical weather data:', error);
+                setError(`Error en el fetch: ${(error as Error).message}`);
+                console.error('Error al hacer fetch:', error);
             }
         };
         fetchData();
     }, [city, historicalType]);
 
+    const getTooltipLabel = (type: string) => {
+        switch (type) {
+            case 'temperature':
+                return 'Temperatura';
+            case 'humidity':
+                return 'Humedad';
+            case 'precipitation':
+                return 'Precipitación';
+            default:
+                return 'Valor';
+        }
+    };
+
     return (
-        <Paper elevation={3} sx={{ p: 3, mt: 3, borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                Gráfico de {historicalType.charAt(0).toUpperCase() + historicalType.slice(1)} - Última Semana
+        <Paper
+            elevation={3}
+            sx={{
+                borderRadius: 2,
+                padding: 2,
+            }}
+        >
+            <Typography
+                variant="h6"
+                sx={{
+                    fontWeight: 'bold',
+                    mb: 2,
+                    textAlign: 'center',
+                }}
+            >
+                Última semana
             </Typography>
             {error ? (
-                <Typography variant="body1" color="error">{error}</Typography>
+                <Typography variant="body1" color="error">
+                    {error}
+                </Typography>
             ) : (
-                <Chart
-                    chartType="LineChart"
-                    width="100%"
-                    height="400px"
-                    data={chartData}
-                    options={{
-			curveType: 'function',
-                        hAxis: {
-                            title: 'Date',
-                        },
-                        vAxis: {
-                            title: `${historicalType.charAt(0).toUpperCase() + historicalType.slice(1)} (°C)`,
-                        },
-                        legend: { position: 'none' },
-                    }}
-                />
+                <ResponsiveContainer width="100%" height={400}>
+                    <AreaChart data={chartData}>
+                        <defs>
+                            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#1976d2" stopOpacity={0.4}/>
+                                <stop offset="95%" stopColor="#1976d2" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Tooltip formatter={(value) => [`${value}`, getTooltipLabel(historicalType)]} />
+                        <Area type="monotone" dataKey="value" stroke="#1976d2" fillOpacity={1} fill="url(#colorUv)" />
+                    </AreaChart>
+                </ResponsiveContainer>
             )}
         </Paper>
     );

@@ -4,6 +4,7 @@ import WeatherIndicator from './components/WeatherIndicator';
 import WeatherTable from './components/WeatherTable';
 import WeatherChart from './components/WeatherChart';
 import Indicator from './components/Indicator';
+import SearchCityInput from './components/SearchCityInput';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AppBar, Toolbar, IconButton, Drawer, List, ListItemButton, ListItemText, Typography, Box, Grid, Container } from '@mui/material';
@@ -15,15 +16,17 @@ const ecuadorianCities = ['Quito', 'Guayaquil', 'Cuenca', 'Manta', 'Loja'];
 
 const theme = createTheme({
     typography: {
-      h1: {
-        fontSize: '2rem',
-      },
-      h2: {
-        fontSize: '1.7rem',
-      },
+        h1: {
+            fontSize: '2rem',
+        },
+        h2: {
+            fontSize: '1.8rem',
+            marginTop: 30,
+            marginBottom: 30
+        },
     },
-  });
-  
+});
+
 
 const App: React.FC = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -43,7 +46,7 @@ const App: React.FC = () => {
         try {
             const { lat, lon, country } = await fetchCoordinates(city);
             if (country !== 'EC') {
-                alert('Please enter a city in Ecuador.');
+                alert('Ingresa una ciudad de Ecuador.');
                 return;
             }
 
@@ -57,7 +60,7 @@ const App: React.FC = () => {
             setForecastData(forecast);
             setError(null);
         } catch (err) {
-            console.error('Error fetching city data:', err);
+            console.error('Error obteniendo los datos:', err);
             setError('Error fetching city data. Please try again later.');
         }
     };
@@ -93,10 +96,8 @@ const App: React.FC = () => {
         setDrawerOpen(!drawerOpen);
     };
 
-
     return (
         <ThemeProvider theme={theme}>
-
             <AppBar position="fixed">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
@@ -130,70 +131,80 @@ const App: React.FC = () => {
                 </List>
             </Drawer>
             <Container maxWidth="lg" sx={{ py: 4, mt: 8 }} >
-                <Grid container>
-                    <Grid item xs = {12}>
-                            <Typography sx={{ fontSize: 40 }} variant="h1" gutterBottom align="center">Daily Ecuador</Typography>
+                <Grid container id="city-selector">
+                    <Grid item xs={12}>
+                        <Typography sx={{ fontSize: 40 }} variant="h1" gutterBottom align="center">Daily Ecuador</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                    <CitySelector
-                        cityInput={cityInput}
-                        setCityInput={setCityInput}
-                        handleSearchCity={handleSearchCity}
-                        historicalType={historicalType}
-                        setHistoricalType={setHistoricalType}
-                    />
+                        <SearchCityInput
+                            cityInput={cityInput}
+                            setCityInput={setCityInput}
+                            handleSearchCity={handleSearchCity}
+                        />
                     </Grid>
-                    <Grid item>
-                    <Grid container py={2} id="indicators" alignItems="center">
+                    <Grid item id="indicators" alignItems="center" xs={12}>
                         <Typography variant="h2" align="center">Indicadores</Typography>
-                        <Grid item xs={12} md={12}>
+                        <Grid item xs={12}>
                             <WeatherIndicator city={selectedCity} />
                         </Grid>
+
                     </Grid>
-                        
-                    </Grid>
-                    
-                    <Grid item xs={12} id="historical">
-                        <Typography variant="h5" align="center">Última semana</Typography>
-                        <Grid item xs={12} md={12}>
-                            <WeatherChart city={selectedCity} historicalType={historicalType} />
+                    <Grid container xs={12} id="forecast" direction="row">
+                        <Grid item xs={12}>
+                            <Typography variant="h2" align="center">Pronosticos</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container direction="row" spacing={2}>
+                                <Grid item lg={4} xs={12}>
+                                    <Grid container direction="column" spacing={2}>
+                                        <Grid item xs={12}>
+                                            <CitySelector
+                                                handleSearchCity={handleSearchCity}
+                                                historicalType={historicalType}
+                                                setHistoricalType={setHistoricalType}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                        <Grid container spacing={2} direction="column">
+                                            <Grid item xs={12} sm={4}>
+                                                <Indicator
+                                                    title="Pronóstico Día 1"
+                                                    value={getValue(0)}
+                                                    icon={getWeatherCondition(0)}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4}>
+                                                <Indicator
+                                                    title="Pronóstico Día 2"
+                                                    value={getValue(1)}
+                                                    icon={getWeatherCondition(1)}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4}>
+                                                <Indicator
+                                                    title="Pronóstico Día 3"
+                                                    value={getValue(2)}
+                                                    icon={getWeatherCondition(2)}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        </Grid>
+                                        
+                                    </Grid>
+
+                                </Grid>
+                                <Grid item lg={8} xs={12}>
+                                    <WeatherChart city={selectedCity} historicalType={historicalType} />
+                                </Grid>
+
+                            </Grid>
 
                         </Grid>
+
                     </Grid>
-                    <Grid item xs={12} id="forecast">
-                        <Typography variant="h5" align="center">Pronosticos</Typography>
-                    </Grid>
-                    {error ? (
-                        <Typography variant="body1" color="error">{error}</Typography>
-                    ) : (
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={4}>
-                                <Indicator
-                                    title="Pronóstico Día 1"
-                                    value={getValue(0)}
-                                    icon={getWeatherCondition(0)}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <Indicator
-                                    title="Pronóstico Día 2"
-                                    value={getValue(1)}
-                                    icon={getWeatherCondition(1)}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <Indicator
-                                    title="Pronóstico Día 3"
-                                    value={getValue(2)}
-                                    icon={getWeatherCondition(2)}
-                                />
-                            </Grid>
-                        </Grid>
-                    )}
-                    <Box sx={{ mb: 4 }} id="summary">
-                        <Typography variant="h4" align="center">Resumen de ciudades</Typography>
-                    </Box>
-                    <Grid item xs={12}>
+
+                    <Grid item xs={12} id="summary">
+                        <Typography variant="h2" align="center">Resumen de ciudades</Typography>
                         <WeatherTable cities={ecuadorianCities} />
                     </Grid>
                 </Grid>
