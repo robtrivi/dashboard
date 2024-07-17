@@ -5,12 +5,25 @@ import WeatherTable from './components/WeatherTable';
 import WeatherChart from './components/WeatherChart';
 import Indicator from './components/Indicator';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AppBar, Toolbar, IconButton, Drawer, List, ListItemButton, ListItemText, Typography, Box, Grid, Container } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import { fetchHistoricalWeatherData, fetchCoordinates } from './api/api';
 
 const ecuadorianCities = ['Quito', 'Guayaquil', 'Cuenca', 'Manta', 'Loja'];
+
+const theme = createTheme({
+    typography: {
+      h1: {
+        fontSize: '2rem',
+      },
+      h2: {
+        fontSize: '1.7rem',
+      },
+    },
+  });
+  
 
 const App: React.FC = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -82,7 +95,8 @@ const App: React.FC = () => {
 
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
+
             <AppBar position="fixed">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
@@ -94,9 +108,9 @@ const App: React.FC = () => {
                 </Toolbar>
             </AppBar>
             <Drawer anchor="left"
-                    open={drawerOpen}
-                    onClose={toggleDrawer}
-                    PaperProps={{ style: { width: '250px' } }}>
+                open={drawerOpen}
+                onClose={toggleDrawer}
+                PaperProps={{ style: { width: '250px' } }}>
                 <List>
                     <ListItemButton component="a" href="#city-selector">
                         <ListItemText primary="Busqueda" />
@@ -115,30 +129,38 @@ const App: React.FC = () => {
                     </ListItemButton>
                 </List>
             </Drawer>
-            <Container maxWidth="lg" sx={{ py: 4, mt: 8 }}>
-                <Box sx={{ mb: 4 }} id="city-selector">
-                    <Typography variant="h4" gutterBottom align="center">Daily Ecuador</Typography>
-                </Box>
-                <Grid container spacing={2}>
-                    <CitySelector 
+            <Container maxWidth="lg" sx={{ py: 4, mt: 8 }} >
+                <Grid container>
+                    <Grid item xs = {12}>
+                            <Typography sx={{ fontSize: 40 }} variant="h1" gutterBottom align="center">Daily Ecuador</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                    <CitySelector
                         cityInput={cityInput}
                         setCityInput={setCityInput}
                         handleSearchCity={handleSearchCity}
                         historicalType={historicalType}
                         setHistoricalType={setHistoricalType}
                     />
-                    <Grid item xs={12} id="indicators">
-                        <Typography variant="h5" align="center">Indicadores</Typography>
                     </Grid>
-                    <Grid container spacing={2} id="forecast">
-                        <Grid item xs={12} md={4}>
+                    <Grid item>
+                    <Grid container py={2} id="indicators" alignItems="center">
+                        <Typography variant="h2" align="center">Indicadores</Typography>
+                        <Grid item xs={12} md={12}>
                             <WeatherIndicator city={selectedCity} />
                         </Grid>
-                        <Grid item xs={12} md={8}>
+                    </Grid>
+                        
+                    </Grid>
+                    
+                    <Grid item xs={12} id="historical">
+                        <Typography variant="h5" align="center">Última semana</Typography>
+                        <Grid item xs={12} md={12}>
                             <WeatherChart city={selectedCity} historicalType={historicalType} />
+
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} id="indicators">
+                    <Grid item xs={12} id="forecast">
                         <Typography variant="h5" align="center">Pronosticos</Typography>
                     </Grid>
                     {error ? (
@@ -146,24 +168,24 @@ const App: React.FC = () => {
                     ) : (
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={4}>
-                                <Indicator 
-                                    title="Pronóstico Día 1" 
-                                    value={getValue(0)} 
-                                    icon={getWeatherCondition(0)} 
+                                <Indicator
+                                    title="Pronóstico Día 1"
+                                    value={getValue(0)}
+                                    icon={getWeatherCondition(0)}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
-                                <Indicator 
-                                    title="Pronóstico Día 2" 
-                                    value={getValue(1)} 
-                                    icon={getWeatherCondition(1)} 
+                                <Indicator
+                                    title="Pronóstico Día 2"
+                                    value={getValue(1)}
+                                    icon={getWeatherCondition(1)}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4}>
-                                <Indicator 
-                                    title="Pronóstico Día 3" 
-                                    value={getValue(2)} 
-                                    icon={getWeatherCondition(2)} 
+                                <Indicator
+                                    title="Pronóstico Día 3"
+                                    value={getValue(2)}
+                                    icon={getWeatherCondition(2)}
                                 />
                             </Grid>
                         </Grid>
@@ -176,7 +198,7 @@ const App: React.FC = () => {
                     </Grid>
                 </Grid>
             </Container>
-        </>
+        </ThemeProvider>
     );
 };
 

@@ -43,9 +43,9 @@ const WeatherIndicator: React.FC<WeatherIndicatorProps> = ({ city }) => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2 }}>
                     {city} ({country})
                 </Typography>
-                <Grid container spacing={2} direction="column" alignItems="center" sx={{ width: '100%' }}>
+                <Grid container spacing={2} direction="row" alignItems="center" sx={{ width: '100%' }}>
                     <Grid item sx={{ width: '100%', textAlign: 'center' }}>
-                        <img src={`http://openweathermap.org/img/wn/${icon}.png`} alt="weather icon" />
+                        <img src={`http://openweathermap.org/img/wn/${icon}@2x.png`} alt="weather icon" />
                         <Indicator title="Temperatura Actual" value={`${temperature?.toFixed(2)}°C`} />
                     </Grid>
                     <Grid item sx={{ width: '100%', textAlign: 'center' }}>
