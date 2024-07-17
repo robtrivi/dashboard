@@ -7,7 +7,7 @@ import Indicator from './components/Indicator';
 import SearchCityInput from './components/SearchCityInput';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AppBar, Toolbar, IconButton, Drawer, List, ListItemButton, ListItemText, Typography, Box, Grid, Container } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Drawer, List, ListItemButton, ListItemText, Typography, Grid, Container } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import { fetchHistoricalWeatherData, fetchCoordinates } from './api/api';
@@ -31,10 +31,9 @@ const theme = createTheme({
 const App: React.FC = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [cityInput, setCityInput] = useState<string>('');
-    const [selectedCity, setSelectedCity] = useState<string>('Guayaquil'); // Default city
+    const [selectedCity, setSelectedCity] = useState<string>('Guayaquil');
     const [forecastData, setForecastData] = useState<any>(null);
     const [historicalType, setHistoricalType] = useState<string>('temperature');
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (selectedCity) {
@@ -58,10 +57,8 @@ const App: React.FC = () => {
             const endDate = now.toISOString().split('T')[0];
             const forecast = await fetchHistoricalWeatherData(lat, lon, startDate, endDate, historicalType);
             setForecastData(forecast);
-            setError(null);
         } catch (err) {
             console.error('Error obteniendo los datos:', err);
-            setError('Error fetching city data. Please try again later.');
         }
     };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCoordinates, fetchHistoricalWeatherData } from '../api/api';
 import { Typography, Paper } from '@mui/material';
-import { AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, Area, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, Area, ResponsiveContainer} from 'recharts';
 
 interface WeatherChartProps {
     city: string;
