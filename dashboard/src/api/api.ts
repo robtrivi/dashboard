@@ -58,7 +58,7 @@ export const fetchHistoricalWeatherData = async (
             dailyParam = 'temperature_2m_max';
             break;
         case 'humidity':
-            dailyParam = 'relative_humidity_2m_max'; // Adjust based on API documentation
+            dailyParam = 'relative_humidity_2m_max';
             break;
         case 'precipitation':
             dailyParam = 'precipitation_sum';
