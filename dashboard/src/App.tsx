@@ -12,7 +12,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 import { fetchHistoricalWeatherData, fetchCoordinates } from './api/api';
 
-const ecuadorianCities = ['Quito', 'Guayaquil', 'Cuenca', 'Manta', 'Loja'];
+const ecuadorianCities = [
+    'Cuenca', 'Guaranda', 'Azogues', 'Tulcán', 'Riobamba', 'Latacunga', 
+    'Machala', 'Esmeraldas', 'Puerto Baquerizo Moreno', 'Guayaquil', 
+    'Ibarra', 'Loja', 'Babahoyo', 'Portoviejo', 'Macas', 'Tena', 'Puyo', 'Quito', 'Santa Elena', 'Santo Domingo', 
+    'Nueva Loja', 'Ambato', 'Zamora'
+];
 
 const theme = createTheme({
     typography: {
@@ -101,7 +106,7 @@ const App: React.FC = () => {
                         <ListItemText primary="Histórico" />
                     </ListItemButton>
                     <ListItemButton component="a" href="#summary">
-                        <ListItemText primary="Resumen" />
+                        <ListItemText primary="Capitales" />
                     </ListItemButton>
                 </List>
             </Drawer>
@@ -117,13 +122,12 @@ const App: React.FC = () => {
                             handleSearchCity={handleSearchCity}
                         />
                     </Grid>
-                    <Grid item id="indicators" alignItems="center" xs={12}>
-                        <Typography variant="h2" align="center">Indicadores</Typography>
+                    <Grid item id="indicators" alignItems="center" xs={12} py={2}>
                         <Grid item xs={12}>
-                            <WeatherIndicator city={selectedCity} />
-                        </Grid>
+                            <WeatherIndicator city={selectedCity.toUpperCase()} />
+                        </Grid>                        
                     </Grid>
-                    <Grid container xs={12} id="forecast" direction="row">
+                    <Grid container id="forecast" direction="row">
                         <Grid item xs={12}>
                             <Typography variant="h2" align="center">Pronósticos</Typography>
                         </Grid>
@@ -133,7 +137,6 @@ const App: React.FC = () => {
                                     <Grid container direction="column" spacing={2}>
                                         <Grid item xs={12}>
                                             <CitySelector
-                                                handleSearchCity={handleSearchCity}
                                                 historicalType={historicalType}
                                                 setHistoricalType={setHistoricalType}
                                             />
@@ -153,15 +156,15 @@ const App: React.FC = () => {
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid item lg={8} xs={12}>
+                                <Grid item lg={8} xs={12} id="historical">
                                     <WeatherChart city={selectedCity} historicalType={historicalType} />
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xs={12} id="summary">
-                        <Typography variant="h2" align="center">Resumen de ciudades</Typography>
-                        <WeatherTable cities={ecuadorianCities} />
+                        <Typography variant="h2" align="center">Clima en las capitales</Typography>
+                        <WeatherTable cities={ecuadorianCities.filter(city => city !== selectedCity)} />
                     </Grid>
                 </Grid>
             </Container>

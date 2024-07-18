@@ -1,14 +1,12 @@
 import React from 'react';
-import { Grid, MenuItem, Button, Select } from '@mui/material';
+import { Grid, MenuItem, Select } from '@mui/material';
 
 interface CitySelectorProps {
-    handleSearchCity: () => void;
     historicalType: string;
     setHistoricalType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CitySelector: React.FC<CitySelectorProps> = ({
-    handleSearchCity,
     historicalType,
     setHistoricalType,
 }) => {
@@ -27,9 +25,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
             <MenuItem value="humidity">Humedad</MenuItem>
             <MenuItem value="precipitation">Precipitación</MenuItem>
         </Select>
-    </Grid>
-    <Grid item>
-        <Button variant="contained" onClick={handleSearchCity} fullWidth>Buscar</Button>
     </Grid>
 </Grid>
     );

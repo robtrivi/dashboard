@@ -98,7 +98,7 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => 
                     {error}
                 </Typography>
             ) : (
-                <ResponsiveContainer height="100%">
+                <ResponsiveContainer height={365}>
                     <AreaChart data={chartData}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">

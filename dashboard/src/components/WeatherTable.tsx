@@ -31,12 +31,11 @@ const WeatherTable: React.FC<WeatherTableProps> = ({ cities }) => {
         <TableContainer component={Paper} elevation={3} sx={{ mt: 2 }}>
             <Table>
                 <TableHead>
-                    <TableRow>
-                        <TableCell>Ciudad</TableCell>
-                        <TableCell>País</TableCell>
-                        <TableCell>Temperatura (°C)</TableCell>
-                        <TableCell>Humedad (%)</TableCell>
-                        <TableCell>Condición</TableCell>
+                    <TableRow sx={{ backgroundColor: '#3f51b5', color: '#fff' }}>
+                        <TableCell sx={{ color: '#fff' }}>Ciudad</TableCell>
+                        <TableCell sx={{ color: '#fff' }}>Temperatura (°C)</TableCell>
+                        <TableCell sx={{ color: '#fff' }}>Humedad (%)</TableCell>
+                        <TableCell sx={{ color: '#fff' }}>Condición</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -45,19 +44,17 @@ const WeatherTable: React.FC<WeatherTableProps> = ({ cities }) => {
                         if (!data) {
                             return (
                                 <TableRow key={city}>
-                                    <TableCell colSpan={5}>Cargando datos...</TableCell>
+                                    <TableCell colSpan={4}>Cargando datos...</TableCell>
                                 </TableRow>
                             );
                         }
-                        const country = data.querySelector('country')?.textContent;
                         const temperatureKelvin = parseFloat(data.querySelector('temperature')?.getAttribute('value') || '0');
                         const temperatureCelsius = temperatureKelvin - 273.15;
                         const humidity = data.querySelector('humidity')?.getAttribute('value');
                         const condition = data.querySelector('weather')?.getAttribute('value');
                         return (
-                            <TableRow key={city}>
+                            <TableRow key={city} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
                                 <TableCell>{city}</TableCell>
-                                <TableCell>{country}</TableCell>
                                 <TableCell>{temperatureCelsius.toFixed(2)}</TableCell>
                                 <TableCell>{humidity}</TableCell>
                                 <TableCell>{condition}</TableCell>

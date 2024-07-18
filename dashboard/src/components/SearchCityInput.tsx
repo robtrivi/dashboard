@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField,Button, Grid } from '@mui/material';
+import { TextField, Button, Grid } from '@mui/material';
 
 interface SearchCityInputProps {
     cityInput: string;
@@ -9,20 +9,26 @@ interface SearchCityInputProps {
 
 const SearchCityInput: React.FC<SearchCityInputProps> = ({ cityInput, setCityInput, handleSearchCity }) => {
     return (
-        <Grid container direction="column" spacing={1}>
-
-        <Grid item xs={12}>
-            <TextField
-                label="Buscar ciudad"
-                value={cityInput}
-                onChange={(e) => setCityInput(e.target.value)}
-                fullWidth
-                sx={{ mb: 2 }}
-            />
-        </Grid>
-        <Grid item>
-        <Button variant="contained" onClick={handleSearchCity} fullWidth>Buscar</Button>
-    </Grid>
+        <Grid container direction="row" spacing={1} alignItems="stretch">
+            <Grid item xs={12} lg={6}>
+                <TextField
+                    label="Buscar ciudad"
+                    value={cityInput}
+                    onChange={(e) => setCityInput(e.target.value)}
+                    fullWidth
+                    sx={{ mb: { lg: 0, xs: 2 } }}
+                />
+            </Grid>
+            <Grid item xs={12} lg={6}>
+                <Button
+                    variant="contained"
+                    onClick={handleSearchCity}
+                    fullWidth
+                    sx={{ height: '100%' }}
+                >
+                    Buscar
+                </Button>
+            </Grid>
         </Grid>
     );
 };
