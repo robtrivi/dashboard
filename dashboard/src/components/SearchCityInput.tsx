@@ -24,7 +24,11 @@ const SearchCityInput: React.FC<SearchCityInputProps> = ({ cityInput, setCityInp
                     variant="contained"
                     onClick={handleSearchCity}
                     fullWidth
-                    sx={{ height: '100%' }}
+                    sx={{
+                        height: '100%', backgroundColor: '#70218a', '&:hover': {
+                            backgroundColor: '#845494'
+                        }
+                    }}
                 >
                     Buscar
                 </Button>

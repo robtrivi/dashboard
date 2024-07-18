@@ -78,7 +78,7 @@ const App: React.FC = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <AppBar position="fixed">
+            <AppBar position="fixed" sx={{ backgroundColor: '#70218a' }}>
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
                         <MenuIcon />

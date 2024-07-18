@@ -7,6 +7,7 @@ import fewClouds from '../assets/conditions/few_clouds.jpg';
 import scatteredClouds from '../assets/conditions/scattered_clouds.jpg';
 import brokenClouds from '../assets/conditions/broken_clouds.jpg';
 import rain from '../assets/conditions/rain.jpg';
+import overcastClouds from '../assets/conditions/overcast_clouds.jpg';
 
 interface ResumeComponentProps {
   city: string;
@@ -32,6 +33,7 @@ const ResumeComponent: React.FC<ResumeComponentProps> = ({ city, country, condit
       'scattered clouds': scatteredClouds,
       'broken clouds': brokenClouds,
       'rain':rain,
+      'overcast clouds':overcastClouds,
     };
     return conditionImages[condition] || brokenClouds;
   };

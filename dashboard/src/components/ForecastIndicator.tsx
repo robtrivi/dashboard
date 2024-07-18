@@ -27,10 +27,6 @@ const ForecastIndicator: React.FC<ForecastIndicatorProps> = ({ forecastData, his
         }
     };
 
-    const getWeatherCondition = () => {
-        return forecastData?.daily?.weather?.[index] || 'clouds';
-    };
-
     const getDate = () => {
         const now = new Date();
         now.setDate(now.getDate() + index);
@@ -41,7 +37,7 @@ const ForecastIndicator: React.FC<ForecastIndicatorProps> = ({ forecastData, his
         <Indicator
             title={`${getDate()}`}
             value={getValue()}
-            icon={getWeatherCondition()}
+            xsSize = {12}
         />
     );
 };

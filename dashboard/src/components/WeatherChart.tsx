@@ -98,19 +98,19 @@ const WeatherChart: React.FC<WeatherChartProps> = ({ city, historicalType }) => 
                     {error}
                 </Typography>
             ) : (
-                <ResponsiveContainer height={365}>
+                <ResponsiveContainer height={450}>
                     <AreaChart data={chartData}>
                         <defs>
                             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#1976d2" stopOpacity={0.4}/>
-                                <stop offset="95%" stopColor="#1976d2" stopOpacity={0}/>
+                                <stop offset="5%" stopColor="#3f51b5" stopOpacity={0.4}/>
+                                <stop offset="95%" stopColor="#3f51b5" stopOpacity={0}/>
                             </linearGradient>
                         </defs>
                         <XAxis dataKey="date" />
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip formatter={(value) => [`${value}`, getTooltipLabel(historicalType)]} />
-                        <Area type="monotone" dataKey="value" stroke="#1976d2" fillOpacity={1} fill="url(#colorUv)" />
+                        <Area type="monotone" dataKey="value" stroke="#3f51b5" fillOpacity={1} fill="url(#colorUv)" />
                     </AreaChart>
                 </ResponsiveContainer>
             )}

@@ -79,14 +79,14 @@ const WeatherIndicator: React.FC<WeatherIndicatorProps> = ({ city }) => {
                 <Grid item xs={12}>
                     <Paper elevation={3} sx={{ borderRadius: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                         <Grid container spacing={2} direction="row" alignItems="strech" sx={{ p:4, width: '100%' }}>
-                            <Indicator title="Temperatura Actual" value={`${temperature?.toFixed(2)}°C`} sizeColumn={3}/>
-                            <Indicator title="Sensación Térmica" value={`${feelsLike?.toFixed(2)}°C`} sizeColumn={3}/>
-                            <Indicator title="Humedad" value={`${humidity?.toFixed(2)}%`} sizeColumn={3}/>
-                            <Indicator title="Condición" value={condition ?? ''} sizeColumn={3}/>
-                            <Indicator title="Presión" value={`${pressure?.toFixed(2)} hPa`} sizeColumn={3}/>
-                            <Indicator title="Viento" value={`${windSpeed?.toFixed(2)} m/s, ${windDirection}`} sizeColumn={3}/>
-                            <Indicator title="Visibilidad" value={`${visibility?.toFixed(2)} m`} sizeColumn={3}/>
-                            <Indicator title="Lluvia" value={lastUpdate ?? ''} sizeColumn={3}/>
+                            <Indicator title="Temperatura Actual" value={`${temperature?.toFixed(2)}°C`} lgSize={3}/>
+                            <Indicator title="Sensación Térmica" value={`${feelsLike?.toFixed(2)}°C`} lgSize={3}/>
+                            <Indicator title="Humedad" value={`${humidity?.toFixed(2)}%`} lgSize={3}/>
+                            <Indicator title="Condición" value={condition ?? ''} lgSize={3}/>
+                            <Indicator title="Presión" value={`${pressure?.toFixed(2)} hPa`} lgSize={3}/>
+                            <Indicator title="Viento" value={`${windSpeed?.toFixed(2)} m/s, ${windDirection}`} lgSize={3}/>
+                            <Indicator title="Visibilidad" value={`${visibility?.toFixed(2)} m`} lgSize={3}/>
+                            <Indicator title="Lluvia" value={lastUpdate ?? ''} lgSize={3}/>
                         </Grid>
                     </Paper>
                 </Grid>

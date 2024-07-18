@@ -31,7 +31,7 @@ const WeatherTable: React.FC<WeatherTableProps> = ({ cities }) => {
         <TableContainer component={Paper} elevation={3} sx={{ mt: 2 }}>
             <Table>
                 <TableHead>
-                    <TableRow sx={{ backgroundColor: '#3f51b5', color: '#fff' }}>
+                    <TableRow sx={{ backgroundColor: '#70218a', color: '#fff' }}>
                         <TableCell sx={{ color: '#fff' }}>Ciudad</TableCell>
                         <TableCell sx={{ color: '#fff' }}>Temperatura (°C)</TableCell>
                         <TableCell sx={{ color: '#fff' }}>Humedad (%)</TableCell>
