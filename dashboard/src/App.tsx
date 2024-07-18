@@ -143,7 +143,7 @@ const App: React.FC = () => {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Grid container spacing={2} direction="column">
-                                                {[0, 1, 2].map(index => (
+                                                {[1, 2, 3].map(index => (
                                                     <Grid item xs={12} sm={4} key={index}>
                                                         <ForecastIndicator
                                                             forecastData={forecastData}
